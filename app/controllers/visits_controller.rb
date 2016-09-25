@@ -1,7 +1,7 @@
 class VisitsController < ApplicationController
   def create
     @link = Link.find_by(slug: params[:slug])
-    # @ip_address = request.remote_ip
+    @ip_address = request.remote_ip
 
     if @link
       Visit.create(link_id: @link.id)

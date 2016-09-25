@@ -1,0 +1,14 @@
+<div class="container">
+  <h3>Edit Link for <%= @link.slug %></h3>
+    <%= form_tag "/links/#{@link.id}", method: :patch do %>  
+    <div class="form-group">
+      <%= text_field_tag :slug, "", :placeholder => @link.slug %>  
+    </div>
+    <div class="form-group">
+      <%= text_field_tag :target_url, "", :placeholder => @link.target_url %>  
+    </div>  
+    <div>
+      <%= submit_tag 'Submit Changes', class: "btn btn-default" %>
+    </div>
+    <% end %>
+</div>

@@ -12,6 +12,9 @@ Rails.application.routes.draw do
  end
 
   get '/' => 'links#index'
+  get 'links/new' => 'links#new'
+  post 'links' => 'links#create'
+  get 'links/:id' => 'links#show'
 
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

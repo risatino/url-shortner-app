@@ -1,6 +1,6 @@
 class LinksController < ApplicationController
   def index
-    @links = Link.all
+    @links = current_user.current_links
   end
 
   def new
@@ -8,43 +8,45 @@ class LinksController < ApplicationController
   end
 
   def create
-    @link = Link.create(slug: params[:slug],
-                        target_url: params[:target_url])
+    @link = Link.new(user_id: current_user.id,
+                     target_url: params[:target_url])
 
+    @link.generate_slug
     @link.standardize_target_url!
-
-    if @link.save
-      redirect_to "/links/#{@link.id}"
-    else
-      render "/links/new"
-    end
+    @link.save
+    redirect_to "/links"
+    flash[:success] = "Link shortened!"
   end
 
   def show
-    @link = Link.find_by(id: params[:id])
+    @link = Link.where('slug LIKE ?', params[:slug])
+
+    Visit.create(link_id: @link.first.id, ip_address: request.remote_ip)
+
+    redirect_to @link.first.target_url
   end
 
   def edit
-    @link = Link.find_by(id: params[:id])
+    @link = Link.find(params[:id])
   end
 
   def update
-    @link = Link.find_by(id: params[:id])
-    @link.update(slug: params[:slug],
-                target_url: params[:target_url])
+    @link = Link.find(params[:id])
+    @link.update(user_id: current_user.id,
+                 target_url: params[:target_url],
+                 slug: params[:slug])
 
-    flash[:success] = "Your link has been updated!"
-    redirect_to "/links/#{@link.id}"
-  end  
+    redirect_to '/links'
+    flash[:success] = "Link updated"
+  end
 
   def destroy
-    @link = Link.find_by(:id => params[:id])
+    @link = Link.find(params[:id])
 
-    if @link && @link.destroy
-      flash[:success] = "Your link has been deleted!"
-    else
-      flash[:warning] = "Sorry, that didn't work."
-    end
-    redirect_to "/"
+    flash[:warning] = "Link deleted."
+
+    @link.destroy
+
+    redirect_to '/links'
   end
 end

@@ -1,16 +1,12 @@
 <h1>Your links</h1>
+ <% @links.each do |link| %>
 
-<table>
-  <tr>
-    <th>Slug</th>
-    <th>Target URL</th>
-    <th>Created At</th>
-  </tr>
-  <% @links.each do |link| %>
-    <tr>
-      <td><%= link.slug %></td>
-      <td><%= link.target_url %></td>
-      <td><%= link.created_at %></td>
-    </tr>
+      <h2>Shortenized URL: localhost:3000/<%= link.slug %></h2>
+      <h2>Genuine URL: <%= link.target_url %></h2>
+      <h3>Created at: <%= link.created_at %></h3>
+      <%= link_to 'edit this link', "/links/#{link.id}/edit" %>
+      <br>
+      <%= link_to 'delete this link', "/links/#{link.id}", method: :delete %>
+      <br>
+      <%= link_to 'See visits for this link', "/visits/#{link.id}" %>
   <% end %>
-<table>

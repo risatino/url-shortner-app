@@ -1,13 +1,10 @@
 class VisitsController < ApplicationController
-  def create
-    @link = Link.find_by(slug: params[:slug])
-    @ip_address = request.remote_ip
+  def show
+    @link = Link.find(params[:id])
+    redirect_to '/links' if @link.user_id != current_user.id
 
-    if @link
-      Visit.create(link_id: @link.id)
-      redirect_to "http://#{@link.target_url}"
-    else
+    unless @link
       raise ActionController::RoutingError.new('Not Found')
-    end   
+    end
   end
 end
